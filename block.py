@@ -23,6 +23,18 @@ class Block:
         self.row_offset += rows
         self.col_offset += cols
 
+    def rotate(self):
+        self.rotation_state += 1
+
+        if self.rotation_state == len(self.cells):
+            self.rotation_state = 0
+
+    def undo_rotation(self):
+        self.rotation_state -= 1
+
+        if self.rotation_state < 0:
+            self.rotation_state = len(self.cells) - 1
+
     def get_cell_positions(self) -> list[Position]:
         positions = self.cells[self.rotation_state]
         moved_positions = []

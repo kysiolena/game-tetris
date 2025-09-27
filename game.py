@@ -89,6 +89,12 @@ class Game:
         if not self.is_block_inside():
             self.current_block.move(-1, 0)
 
+    def rotate(self) -> None:
+        self.current_block.rotate()
+
+        if not self.is_block_inside():
+            self.current_block.undo_rotation()
+
     def is_block_inside(self) -> bool:
         positions = self.current_block.get_cell_positions()
 
@@ -113,6 +119,8 @@ class Game:
                     self.move_right()
                 elif event.key == pygame.K_DOWN:
                     self.move_down()
+                elif event.key == pygame.K_UP:
+                    self.rotate()
 
     def start(self) -> None:
         while True:

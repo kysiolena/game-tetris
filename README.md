@@ -1,9 +1,11 @@
 # Pygame Tetris Game Clone
 
-Based on YouTube tutorial: [Creating Tetris in Python with pygame - Beginner Tutorial (OOP)](https://www.youtube.com/watch?v=nF_crEtmpBo)
+Based on YouTube
+tutorial: [Creating Tetris in Python with pygame - Beginner Tutorial (OOP)](https://www.youtube.com/watch?v=nF_crEtmpBo)
 
 ## Checklist
-1. [ ] Install [Pygame](https://www.pygame.org/news)
+
+1. [x] Install [Pygame](https://pypi.org/project/pygame-ce/)
 2. [ ] Setup the Game Loop
 3. [ ] Create the Grid
 4. [ ] Create the Blocks

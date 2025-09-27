@@ -6,7 +6,7 @@ tutorial: [Creating Tetris in Python with pygame - Beginner Tutorial (OOP)](http
 ## Checklist
 
 1. [x] Install [Pygame](https://pypi.org/project/pygame-ce/)
-2. [ ] Setup the Game Loop
+2. [x] Setup the Game Loop
 3. [ ] Create the Grid
 4. [ ] Create the Blocks
 5. [ ] Move the Blocks

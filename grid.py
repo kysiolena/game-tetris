@@ -19,7 +19,7 @@ class Grid:
         # [
         #   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], x 20
         # ]
-        self.grid = [[0 for j in range(self.num_cols)] for i in range(self.num_rows)]
+        self.grid = [[0 for _j in range(self.num_cols)] for _i in range(self.num_rows)]
 
         # Colors
         self.colors = Colors.get_colors()
@@ -33,6 +33,15 @@ class Grid:
             for col in range(self.num_cols):
                 print(self.grid[row][col], end=" ")
             print()
+
+    def is_inside(self, position: Position) -> bool:
+        is_in_rows = 0 <= position.row < self.num_rows
+        is_in_cols = 0 <= position.col < self.num_cols
+
+        if is_in_rows and is_in_cols:
+            return True
+
+        return False
 
     def draw(self, surface: Surface) -> None:
         """

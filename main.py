@@ -2,6 +2,8 @@ import sys
 
 import pygame
 
+from grid import Grid
+
 # Screen size
 SCREEN_WIDTH = 300
 SCREEN_HEIGHT = 600
@@ -30,6 +32,15 @@ if __name__ == "__main__":
     # 2. Updating Positions
     # 3. Drawing Objects
 
+    # Init Grid
+    game_grid = Grid()
+
+    game_grid.grid[0][0] = 1
+    game_grid.grid[3][5] = 4
+    game_grid.grid[17][8] = 7
+
+    game_grid.print_grid()
+
     # Init infinity loop
     while True:
         # 1. Event Handling
@@ -38,8 +49,11 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
         # Drawing
         screen.fill(DARK_BLUE)
+
+        game_grid.draw(screen)
 
         # Update screen
         pygame.display.update()

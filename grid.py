@@ -1,4 +1,8 @@
-import pygame
+from pygame import Surface
+
+from cell import Cell
+from colors import Colors
+from position import Position
 
 
 class Grid:
@@ -18,45 +22,26 @@ class Grid:
         self.grid = [[0 for j in range(self.num_cols)] for i in range(self.num_rows)]
 
         # Colors
-        self.colors = self.get_cell_colors()
+        self.colors = Colors.get_colors()
 
-    def print_grid(self):
+    def print_grid(self) -> None:
+        """
+        Print the Grid to the console
+        :return: None
+        """
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 print(self.grid[row][col], end=" ")
             print()
 
-    def get_cell_colors(self):
-        dark_grey = (26, 31, 40)
-        green = (47, 230, 23)
-        red = (232, 18, 18)
-        orange = (226, 116, 17)
-        yellow = (237, 234, 4)
-        purple = (166, 0, 247)
-        cyan = (21, 204, 209)
-        blue = (13, 64, 216)
-
-        return [dark_grey, green, red, orange, yellow, purple, cyan, blue]
-
-    def draw(self, surface):
+    def draw(self, surface: Surface) -> None:
+        """
+        Draw the Grid to the surface
+        :return: None
+        """
         for row in range(self.num_rows):
             for col in range(self.num_cols):
-                # Cell Value
-                cell_value = self.grid[row][col]
-                # Cell Color
-                cell_color = self.colors[cell_value]
-
-                # Cell Rect
-                cell_rect = pygame.Rect(
-                    # Left position
-                    col * self.cell_size + 1,
-                    # Top position
-                    row * self.cell_size + 1,
-                    # Width cell
-                    self.cell_size - 1,
-                    # Height cell
-                    self.cell_size - 1,
-                )
-
-                # Draw Cell Rect
-                pygame.draw.rect(surface, cell_color, cell_rect)
+                # Color Cell
+                color_index = self.grid[row][col]
+                # Draw Cell
+                Cell.draw(Position(row, col), color_index, surface)

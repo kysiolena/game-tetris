@@ -12,22 +12,14 @@ from grid import Grid
 
 class Game:
     # Screen size
-    SCREEN_WIDTH = 300
-    SCREEN_HEIGHT = 600
+    SCREEN_WIDTH: int = 300
+    SCREEN_HEIGHT: int = 600
 
     # FPS
-    FPS = 60
+    FPS: int = 60
 
-    # All blocks
-    BLOCKS: tuple[Block] = (
-        LBlock(),
-        JBlock(),
-        TBlock(),
-        IBlock(),
-        OBlock(),
-        SBlock(),
-        ZBlock(),
-    )
+    # Speed
+    SPEED: int = 1
 
     def __init__(self):
         # Init Pygame
@@ -44,13 +36,13 @@ class Game:
 
         # Custom event
         self.GAME_UPDATE = pygame.USEREVENT
-        pygame.time.set_timer(self.GAME_UPDATE, 200)
+        pygame.time.set_timer(self.GAME_UPDATE, 200 // self.SPEED)
 
         # Init Grid
         self.grid = Grid()
 
         # Visible Blocks
-        self.visible_blocks: list[Block] = list(self.BLOCKS)
+        self.visible_blocks: list[Block] = self.get_blocks_list()
 
         # Current block
         self.current_block: Block = self.get_random_block()
@@ -58,10 +50,21 @@ class Game:
         # Next block
         self.next_block: Block = self.get_random_block()
 
+    def get_blocks_list(self) -> list[Block]:
+        return [
+            LBlock(),
+            JBlock(),
+            TBlock(),
+            IBlock(),
+            OBlock(),
+            SBlock(),
+            ZBlock(),
+        ]
+
     def get_random_block(self) -> Block:
         # Refill list of visible blocks
         if len(self.visible_blocks) == 0:
-            self.visible_blocks = list(self.BLOCKS)
+            self.visible_blocks = self.get_blocks_list()
 
         # Get random block
         block = random.choice(self.visible_blocks)

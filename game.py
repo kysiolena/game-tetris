@@ -11,11 +11,30 @@ from grid import Grid
 
 
 class Game:
+    """
+    __Scoring System
+    100 points for a single line clear
+    300 points for a double line clear
+    500 points for a triple line clear
+    1 point for each move down by the player
+
+    __Move Block
+    LEFT - press arrow left
+    RIGHT - press arrow right
+    DOWN - press arrow down
+
+    __Rotate Block
+    ROTATE - press arrow up
+
+    __Restart Game
+    RESTART - press space
+    """
+
     # FPS
     FPS: int = 60
 
     # Speed
-    SPEED: int = 10
+    SPEED: int = 1
 
     # Screen size
     SCREEN_WIDTH: int = 500
@@ -32,6 +51,7 @@ class Game:
     current_block: Block | None = None
     next_block: Block | None = None
     game_over: bool = False
+    score: int = 0
 
     def __init__(self):
         # Init Pygame
@@ -112,8 +132,11 @@ class Game:
         if not self.is_block_inside() or not self.is_block_fits():
             self.current_block.move(0, -1)
 
-    def move_down(self) -> None:
+    def move_down(self, by_player: bool = False) -> None:
         self.current_block.move(1, 0)
+
+        if by_player:
+            self.update_score(0, 1)
 
         if not self.is_block_inside() or not self.is_block_fits():
             self.current_block.move(-1, 0)
@@ -126,6 +149,7 @@ class Game:
             self.current_block.undo_rotation()
 
     def lock_block(self):
+
         positions = self.current_block.get_cell_positions()
 
         for position in positions:
@@ -136,7 +160,11 @@ class Game:
         self.current_block = self.next_block
         self.next_block = self.get_random_block()
 
-        self.grid.clear_full_rows()
+        # Clear full lines
+        rows_cleared = self.grid.clear_full_rows()
+
+        # Update Score
+        self.update_score(rows_cleared, 0)
 
         # Game Over
         if not self.is_block_fits():
@@ -160,6 +188,18 @@ class Game:
 
         return True
 
+    def update_score(self, lines_cleared: int = 0, move_down_points: int = 0) -> None:
+        # If it has lines cleared
+        if lines_cleared == 1:
+            self.score += 100
+        elif lines_cleared == 2:
+            self.score += 300
+        elif lines_cleared == 3:
+            self.score += 500
+
+        # Add move down points
+        self.score += move_down_points
+
     def event_handler(self) -> None:
         for event in pygame.event.get():
             # __QUIT GAME__
@@ -178,7 +218,7 @@ class Game:
                     elif event.key == pygame.K_RIGHT:
                         self.move_right()
                     elif event.key == pygame.K_DOWN:
-                        self.move_down()
+                        self.move_down(True)
                     elif event.key == pygame.K_UP:
                         self.rotate()
 
@@ -192,11 +232,22 @@ class Game:
             self.event_handler()
 
             # __DRAWING OBJECTS__
+            # Score Value Surface
+            score_value_surface = self.title_font.render(
+                str(self.score), True, Colors.WHITE
+            )
+
             self.screen.fill(Colors.DARK_BLUE)
 
             # Score
             self.screen.blit(self.score_surface, self.SCORE_POSITION)
             pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, self.score_rect, 0, 10)
+            self.screen.blit(
+                score_value_surface,
+                score_value_surface.get_rect(
+                    centerx=self.score_rect.centerx, centery=self.score_rect.centery
+                ),
+            )
 
             # Next block
             self.screen.blit(self.next_surface, self.NEXT_BLOCK_POSITION)
@@ -227,6 +278,9 @@ class Game:
 
         # Game Over
         self.game_over = False
+
+        # Score
+        self.score = 0
 
     def reset(self) -> None:
         self.grid.reset()

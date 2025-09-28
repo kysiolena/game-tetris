@@ -47,6 +47,17 @@ class Game:
     # Game Over position
     GAME_OVER_POSITION: tuple[int, int, int, int] = (320, 450, 50, 50)
 
+    # Next Block offset x, y
+    NEXT_BLOCK_OFFSET: dict[int, tuple[int, int]] = {
+        1: (270, 270),
+        2: (270, 270),
+        3: (255, 290),
+        4: (250, 280),
+        5: (270, 270),
+        6: (270, 270),
+        7: (270, 270),
+    }
+
     visible_blocks: list[Block] = []
     current_block: Block | None = None
     next_block: Block | None = None
@@ -119,6 +130,9 @@ class Game:
     def draw(self, surface: Surface) -> None:
         self.grid.draw(surface)
         self.current_block.draw(surface)
+
+        offset_x, offset_y = self.NEXT_BLOCK_OFFSET[self.next_block.id]
+        self.next_block.draw(surface, offset_x, offset_y)
 
     def move_left(self) -> None:
         self.current_block.move(0, -1)

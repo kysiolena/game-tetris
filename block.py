@@ -48,9 +48,9 @@ class Block:
 
         return moved_positions
 
-    def draw(self, surface: Surface) -> None:
+    def draw(self, surface: Surface, offset_x: int = 11, offset_y: int = 11) -> None:
         positions = self.get_cell_positions()
 
         for position in positions:
             # Draw Cell
-            Cell.draw(position, self.id, surface)
+            Cell.draw(position, self.id, surface, offset_x, offset_y)

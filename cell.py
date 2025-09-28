@@ -6,24 +6,26 @@ from position import Position
 
 
 class Cell:
-    size = 30
-    colors = Colors.get_colors()
+    SIZE = 30
+    OFFSET_TOP = 11
+    OFFSET_LEFT = 11
+    COLORS = Colors.get_colors()
 
     @classmethod
     def draw(cls, position: Position, color_index: int, surface: Surface):
         # Cell Color
-        cell_color = cls.colors[color_index]
+        cell_color = cls.COLORS[color_index]
 
         # Cell Rect
         cell_rect = pygame.Rect(
             # Left position
-            position.col * cls.size + 1,
+            position.col * cls.SIZE + cls.OFFSET_LEFT,
             # Top position
-            position.row * cls.size + 1,
+            position.row * cls.SIZE + cls.OFFSET_TOP,
             # Width cell
-            cls.size - 1,
+            cls.SIZE - 1,
             # Height cell
-            cls.size - 1,
+            cls.SIZE - 1,
         )
 
         # Draw Cell Rect

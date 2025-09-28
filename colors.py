@@ -8,6 +8,8 @@ class Colors:
     CYAN = (21, 204, 209)
     BLUE = (13, 64, 216)
     DARK_BLUE = (44, 44, 127)
+    WHITE = (255, 255, 255)
+    LIGHT_BLUE = (59, 85, 162)
 
     @classmethod
     def get_colors(cls) -> list[tuple[int, int, int]]:
@@ -25,4 +27,6 @@ class Colors:
             cls.CYAN,
             cls.BLUE,
             cls.DARK_BLUE,
+            cls.WHITE,
+            cls.LIGHT_BLUE,
         ]

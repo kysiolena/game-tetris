@@ -11,15 +11,22 @@ from grid import Grid
 
 
 class Game:
-    # Screen size
-    SCREEN_WIDTH: int = 300
-    SCREEN_HEIGHT: int = 600
-
     # FPS
     FPS: int = 60
 
     # Speed
-    SPEED: int = 1
+    SPEED: int = 10
+
+    # Screen size
+    SCREEN_WIDTH: int = 500
+    SCREEN_HEIGHT: int = 620
+
+    # Score position
+    SCORE_POSITION: tuple[int, int, int, int] = (365, 20, 50, 50)
+    # Next block position
+    NEXT_BLOCK_POSITION: tuple[int, int, int, int] = (375, 180, 50, 50)
+    # Game Over position
+    GAME_OVER_POSITION: tuple[int, int, int, int] = (320, 450, 50, 50)
 
     visible_blocks: list[Block] = []
     current_block: Block | None = None
@@ -29,6 +36,21 @@ class Game:
     def __init__(self):
         # Init Pygame
         pygame.init()
+
+        # Title Font
+        self.title_font = pygame.font.Font(None, 40)
+
+        # Score Surface
+        self.score_surface = self.title_font.render("Score", True, Colors.WHITE)
+        # Next block Surface
+        self.next_surface = self.title_font.render("Next", True, Colors.WHITE)
+        # Game Over Surface
+        self.game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
+
+        # Score Rect
+        self.score_rect = pygame.Rect(320, 55, 170, 60)
+        # Next block Rect
+        self.next_rect = pygame.Rect(320, 215, 170, 180)
 
         # Set game screen size
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
@@ -170,7 +192,19 @@ class Game:
             self.event_handler()
 
             # __DRAWING OBJECTS__
-            self.screen.fill(Colors.get_colors()[8])
+            self.screen.fill(Colors.DARK_BLUE)
+
+            # Score
+            self.screen.blit(self.score_surface, self.SCORE_POSITION)
+            pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, self.score_rect, 0, 10)
+
+            # Next block
+            self.screen.blit(self.next_surface, self.NEXT_BLOCK_POSITION)
+            pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, self.next_rect, 0, 10)
+
+            # Game Over
+            if self.game_over:
+                self.screen.blit(self.game_over_surface, self.GAME_OVER_POSITION)
 
             # Draw Game
             self.draw(self.screen)

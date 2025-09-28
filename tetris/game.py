@@ -1,3 +1,4 @@
+import os
 import random
 import sys
 
@@ -67,6 +68,17 @@ class Game:
     def __init__(self):
         # Init Pygame
         pygame.init()
+
+        # Sounds
+        self.SOUNDS: dict = {
+            "process": pygame.mixer.Sound(
+                os.path.join("tetris", "sounds", "music.ogg")
+            ),
+            "rotate": pygame.mixer.Sound(
+                os.path.join("tetris", "sounds", "rotate.ogg")
+            ),
+            "clear": pygame.mixer.Sound(os.path.join("tetris", "sounds", "clear.ogg")),
+        }
 
         # Title Font
         self.title_font = pygame.font.Font(None, 40)
@@ -161,6 +173,9 @@ class Game:
 
         if not self.is_block_inside() or not self.is_block_fits():
             self.current_block.undo_rotation()
+        else:
+            # Sound
+            self.SOUNDS["rotate"].play()
 
     def lock_block(self):
 
@@ -177,8 +192,12 @@ class Game:
         # Clear full lines
         rows_cleared = self.grid.clear_full_rows()
 
-        # Update Score
-        self.update_score(rows_cleared, 0)
+        if rows_cleared > 0:
+            # Sound
+            self.SOUNDS["clear"].play()
+
+            # Update Score
+            self.update_score(rows_cleared, 0)
 
         # Game Over
         if not self.is_block_fits():
@@ -270,6 +289,8 @@ class Game:
             # Game Over
             if self.game_over:
                 self.screen.blit(self.game_over_surface, self.GAME_OVER_POSITION)
+                # Sound
+                self.SOUNDS["process"].stop()
 
             # Draw Game
             self.draw(self.screen)
@@ -295,6 +316,9 @@ class Game:
 
         # Score
         self.score = 0
+
+        # Sound
+        self.SOUNDS["process"].play(-1)
 
     def reset(self) -> None:
         self.grid.reset()

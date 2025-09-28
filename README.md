@@ -11,7 +11,7 @@ tutorial: [Creating Tetris in Python with pygame - Beginner Tutorial (OOP)](http
 4. [x] Create the Blocks
 5. [x] Move the Blocks
 6. [x] Rotate the Blocks
-7. [ ] Check for collisions
+7. [x] Check for collisions
 8. [ ] Check for completed rows
 9. [ ] Game over
 10. [ ] Create User Interface

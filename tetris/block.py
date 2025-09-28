@@ -1,8 +1,8 @@
 from pygame import Surface
 
-from cell import Cell
-from colors import Colors
-from position import Position
+from .cell import Cell
+from .colors import Colors
+from .position import Position
 
 
 class Block:

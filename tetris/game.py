@@ -4,10 +4,10 @@ import sys
 import pygame
 from pygame import Surface
 
-from block import Block
-from blocks import LBlock, JBlock, TBlock, IBlock, OBlock, SBlock, ZBlock
-from colors import Colors
-from grid import Grid
+from .block import Block
+from .blocks import LBlock, JBlock, TBlock, IBlock, OBlock, SBlock, ZBlock
+from .colors import Colors
+from .grid import Grid
 
 
 class Game:

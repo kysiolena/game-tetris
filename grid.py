@@ -49,6 +49,44 @@ class Grid:
 
         return False
 
+    def is_row_full(self, row: int) -> bool:
+        for col in range(self.num_cols):
+            if self.grid[row][col] == 0:
+                return False
+
+        return True
+
+    def clear_full_rows(self) -> int:
+        completed = 0
+
+        # Check all rows from bottom to top
+        for row in range(self.num_rows - 1, 0, -1):
+            # Clear the row if it is full
+            if self.is_row_full(row):
+                self.clear_row(row)
+
+                completed += 1
+            # Move down the row if the row beyond it is full
+            elif completed > 0:
+                self.move_row_down(row, completed)
+
+        return completed
+
+    def clear_row(self, row: int) -> None:
+        for col in range(self.num_cols):
+            self.clear_col(row, col)
+
+    def clear_col(self, row: int, col: int) -> None:
+        # Set value column to 0
+        self.grid[row][col] = 0
+
+    def move_row_down(self, row: int, cleared_num_rows: int) -> None:
+        for col in range(self.num_cols):
+            # Replace the columns of the cleared row with the columns of the row above
+            self.grid[row + cleared_num_rows][col] = self.grid[row][col]
+            # Clear column
+            self.clear_col(row, col)
+
     def draw(self, surface: Surface) -> None:
         """
         Draw the Grid to the surface

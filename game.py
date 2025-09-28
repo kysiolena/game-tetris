@@ -78,32 +78,53 @@ class Game:
     def move_left(self) -> None:
         self.current_block.move(0, -1)
 
-        if not self.is_block_inside():
+        if not self.is_block_inside() or not self.is_block_fits():
             self.current_block.move(0, 1)
 
     def move_right(self) -> None:
         self.current_block.move(0, 1)
 
-        if not self.is_block_inside():
+        if not self.is_block_inside() or not self.is_block_fits():
             self.current_block.move(0, -1)
 
     def move_down(self) -> None:
         self.current_block.move(1, 0)
 
-        if not self.is_block_inside():
+        if not self.is_block_inside() or not self.is_block_fits():
             self.current_block.move(-1, 0)
+            self.lock_block()
 
     def rotate(self) -> None:
         self.current_block.rotate()
 
-        if not self.is_block_inside():
+        if not self.is_block_inside() or not self.is_block_fits():
             self.current_block.undo_rotation()
+
+    def lock_block(self):
+        positions = self.current_block.get_cell_positions()
+
+        for position in positions:
+            # 0 - empty Cell
+            # Set Cell of the Grid to Current Block ID (1 - 4)
+            self.grid.grid[position.row][position.col] = self.current_block.id
+
+        self.current_block = self.next_block
+        self.next_block = self.get_random_block()
 
     def is_block_inside(self) -> bool:
         positions = self.current_block.get_cell_positions()
 
         for position in positions:
             if not self.grid.is_inside(position):
+                return False
+
+        return True
+
+    def is_block_fits(self) -> bool:
+        positions = self.current_block.get_cell_positions()
+
+        for position in positions:
+            if not self.grid.is_empty(position):
                 return False
 
         return True

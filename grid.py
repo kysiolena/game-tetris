@@ -43,6 +43,12 @@ class Grid:
 
         return False
 
+    def is_empty(self, position: Position) -> bool:
+        if self.grid[position.row][position.col] == 0:
+            return True
+
+        return False
+
     def draw(self, surface: Surface) -> None:
         """
         Draw the Grid to the surface

@@ -21,6 +21,11 @@ class Game:
     # Speed
     SPEED: int = 1
 
+    visible_blocks: list[Block] = []
+    current_block: Block | None = None
+    next_block: Block | None = None
+    game_over: bool = False
+
     def __init__(self):
         # Init Pygame
         pygame.init()
@@ -41,16 +46,11 @@ class Game:
         # Init Grid
         self.grid = Grid()
 
-        # Visible Blocks
-        self.visible_blocks: list[Block] = self.get_blocks_list()
+        # Init game
+        self.init()
 
-        # Current block
-        self.current_block: Block = self.get_random_block()
-
-        # Next block
-        self.next_block: Block = self.get_random_block()
-
-    def get_blocks_list(self) -> list[Block]:
+    @staticmethod
+    def get_blocks_list() -> list[Block]:
         return [
             LBlock(),
             JBlock(),
@@ -113,7 +113,12 @@ class Game:
 
         self.current_block = self.next_block
         self.next_block = self.get_random_block()
+
         self.grid.clear_full_rows()
+
+        # Game Over
+        if not self.is_block_fits():
+            self.game_over = True
 
     def is_block_inside(self) -> bool:
         positions = self.current_block.get_cell_positions()
@@ -142,17 +147,21 @@ class Game:
 
             # __UPDATING POSITIONS__
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.move_left()
-                elif event.key == pygame.K_RIGHT:
-                    self.move_right()
-                elif event.key == pygame.K_DOWN:
-                    self.move_down()
-                elif event.key == pygame.K_UP:
-                    self.rotate()
+                if self.game_over:
+                    if event.key == pygame.K_SPACE:
+                        self.reset()
+                else:
+                    if event.key == pygame.K_LEFT:
+                        self.move_left()
+                    elif event.key == pygame.K_RIGHT:
+                        self.move_right()
+                    elif event.key == pygame.K_DOWN:
+                        self.move_down()
+                    elif event.key == pygame.K_UP:
+                        self.rotate()
 
             # Trigger move block down automatically with one per 200 ms
-            if event.type == self.GAME_UPDATE:
+            if event.type == self.GAME_UPDATE and not self.game_over:
                 self.move_down()
 
     def start(self) -> None:
@@ -171,3 +180,20 @@ class Game:
 
             # Set how fast Game should be run
             self.clock.tick(self.FPS)
+
+    def init(self) -> None:
+        # Visible Blocks
+        self.visible_blocks = self.get_blocks_list()
+
+        # Current block
+        self.current_block = self.get_random_block()
+
+        # Next block
+        self.next_block = self.get_random_block()
+
+        # Game Over
+        self.game_over = False
+
+    def reset(self) -> None:
+        self.grid.reset()
+        self.init()

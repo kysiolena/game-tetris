@@ -80,6 +80,10 @@ class Grid:
         # Set value column to 0
         self.grid[row][col] = 0
 
+    def reset(self) -> None:
+        for row in range(self.num_rows):
+            self.clear_row(row)
+
     def move_row_down(self, row: int, cleared_num_rows: int) -> None:
         for col in range(self.num_cols):
             # Replace the columns of the cleared row with the columns of the row above

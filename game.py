@@ -42,6 +42,10 @@ class Game:
         # How fast game should be run
         self.clock = pygame.time.Clock()
 
+        # Custom event
+        self.GAME_UPDATE = pygame.USEREVENT
+        pygame.time.set_timer(self.GAME_UPDATE, 200)
+
         # Init Grid
         self.grid = Grid()
 
@@ -121,6 +125,10 @@ class Game:
                     self.move_down()
                 elif event.key == pygame.K_UP:
                     self.rotate()
+
+            # Trigger move block down automatically with one per 200 ms
+            if event.type == self.GAME_UPDATE:
+                self.move_down()
 
     def start(self) -> None:
         while True:

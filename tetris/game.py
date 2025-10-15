@@ -41,29 +41,14 @@ class Game:
     SCREEN_WIDTH: int = 500
     SCREEN_HEIGHT: int = 620
 
-    # Score position
-    SCORE_POSITION: tuple[int, int, int, int] = (365, 20, 50, 50)
-    # Next block position
-    NEXT_BLOCK_POSITION: tuple[int, int, int, int] = (375, 180, 50, 50)
-    # Game Over position
-    GAME_OVER_POSITION: tuple[int, int, int, int] = (320, 450, 50, 50)
-
-    # Next Block offset x, y
-    NEXT_BLOCK_OFFSET: dict[int, tuple[int, int]] = {
-        1: (270, 270),
-        2: (270, 270),
-        3: (255, 290),
-        4: (250, 280),
-        5: (270, 270),
-        6: (270, 270),
-        7: (270, 270),
-    }
-
     visible_blocks: list[Block] = []
     current_block: Block | None = None
     next_block: Block | None = None
     game_over: bool = False
     score: int = 0
+
+    # Buttons
+    buttons: dict[str, dict] = {}
 
     def __init__(self):
         # Init Pygame
@@ -82,18 +67,6 @@ class Game:
 
         # Title Font
         self.title_font = pygame.font.Font(None, 40)
-
-        # Score Surface
-        self.score_surface = self.title_font.render("Score", True, Colors.WHITE)
-        # Next block Surface
-        self.next_surface = self.title_font.render("Next", True, Colors.WHITE)
-        # Game Over Surface
-        self.game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
-
-        # Score Rect
-        self.score_rect = pygame.Rect(320, 55, 170, 60)
-        # Next block Rect
-        self.next_rect = pygame.Rect(320, 215, 170, 180)
 
         # Set game screen size
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
@@ -143,8 +116,123 @@ class Game:
         self.grid.draw(surface)
         self.current_block.draw(surface)
 
-        offset_x, offset_y = self.NEXT_BLOCK_OFFSET[self.next_block.id]
+        # Next Block offset x, y
+        next_block_offsets: dict[int, tuple[int, int]] = {
+            1: (270, 270),
+            2: (270, 270),
+            3: (255, 290),
+            4: (255, 270),
+            5: (270, 270),
+            6: (270, 270),
+            7: (270, 270),
+        }
+
+        offset_x, offset_y = next_block_offsets[self.next_block.id]
         self.next_block.draw(surface, offset_x, offset_y)
+
+    def draw_score(self) -> None:
+        # Score Surface
+        score_surface = self.title_font.render("Score", True, Colors.WHITE)
+
+        # Score Value Surface
+        score_value_surface = self.title_font.render(
+            str(self.score), True, Colors.WHITE
+        )
+
+        # Score Rect
+        score_rect = pygame.Rect(320, 55, 170, 60)
+
+        # Score draw
+        self.screen.blit(score_surface, (365, 20, 50, 50))
+        pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
+        self.screen.blit(
+            score_value_surface,
+            score_value_surface.get_rect(
+                centerx=score_rect.centerx, centery=score_rect.centery
+            ),
+        )
+
+    def draw_next(self) -> None:
+        # Next block Surface
+        next_surface = self.title_font.render("Next", True, Colors.WHITE)
+
+        # Next block Rect
+        next_rect = pygame.Rect(320, 215, 170, 180)
+
+        # Next block draw
+        self.screen.blit(next_surface, (375, 180, 50, 50))
+        pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, next_rect, 0, 10)
+
+    def draw_game_over(self) -> None:
+        # Game Over Surface
+        game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
+
+        # Game Over Rect
+        game_over_rect = pygame.Rect(
+            10, self.SCREEN_HEIGHT // 4, self.SCREEN_WIDTH - 20, self.SCREEN_HEIGHT // 2
+        )
+
+        # Backdrop
+        transparent_surface = pygame.Surface(
+            (self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.SRCALPHA
+        )
+        game_over_bg_rect = pygame.Rect(0, 0, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        pygame.draw.rect(
+            transparent_surface,
+            Colors.WHITE + (128,),
+            game_over_bg_rect,
+            0,
+        )
+
+        # Game Over draw
+        self.screen.blit(transparent_surface, (0, 0))
+        pygame.draw.rect(self.screen, Colors.DARK_BLUE, game_over_rect, 0, 10)
+        self.screen.blit(
+            game_over_surface,
+            game_over_surface.get_rect(
+                centerx=game_over_rect.centerx,
+                centery=(self.SCREEN_HEIGHT // 4 + 40),
+            ),
+        )
+
+        self.draw_repeat_button()
+
+        # Sound
+        self.SOUNDS["process"].stop()
+
+    def draw_repeat_button(self) -> None:
+        # Repeat Surface
+        repeat_surface = self.title_font.render("START NEW GAME", True, Colors.WHITE)
+
+        # Repeat Button
+        repeat_button = self.buttons.get("repeat")
+
+        if not repeat_button:
+            # Repeat block Rect
+            repeat_rect = pygame.Rect(
+                self.SCREEN_WIDTH // 2 - 150,
+                self.SCREEN_HEIGHT - self.SCREEN_HEIGHT // 4 - 70,
+                300,
+                50,
+            )
+
+            self.buttons["repeat"] = {"rect": repeat_rect, "color": Colors.GREEN}
+
+        # Repeat block draw
+        pygame.draw.rect(
+            self.screen,
+            self.buttons["repeat"]["color"],
+            self.buttons["repeat"]["rect"],
+            0,
+            10,
+        )
+        self.screen.blit(
+            repeat_surface,
+            repeat_surface.get_rect(
+                centerx=self.buttons["repeat"]["rect"].centerx,
+                centery=self.buttons["repeat"]["rect"].centery,
+            ),
+        )
 
     def move_left(self) -> None:
         self.current_block.move(0, -1)
@@ -255,6 +343,32 @@ class Game:
                     elif event.key == pygame.K_UP:
                         self.rotate()
 
+            # __MOUSE
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Mouse current position
+                mouse_pos = pygame.mouse.get_pos()
+
+                if self.game_over:
+                    # Repeat Button Rect
+                    repeat_button = self.buttons.get("repeat")
+
+                    if repeat_button and repeat_button["rect"].collidepoint(mouse_pos):
+                        self.reset()
+
+            if event.type == pygame.MOUSEMOTION:
+                # Mouse current position
+                mouse_pos = pygame.mouse.get_pos()
+
+                if self.game_over:
+                    # Repeat Button Rect
+                    repeat_button = self.buttons.get("repeat")
+
+                    if repeat_button:
+                        if repeat_button["rect"].collidepoint(mouse_pos):
+                            repeat_button["color"] = Colors.DARK_GREEN
+                        else:
+                            repeat_button["color"] = Colors.GREEN
+
             # Trigger move block down automatically with one per 200 ms
             if event.type == self.GAME_UPDATE and not self.game_over:
                 self.move_down()
@@ -265,35 +379,17 @@ class Game:
             self.event_handler()
 
             # __DRAWING OBJECTS__
-            # Score Value Surface
-            score_value_surface = self.title_font.render(
-                str(self.score), True, Colors.WHITE
-            )
-
             self.screen.fill(Colors.DARK_BLUE)
 
-            # Score
-            self.screen.blit(self.score_surface, self.SCORE_POSITION)
-            pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, self.score_rect, 0, 10)
-            self.screen.blit(
-                score_value_surface,
-                score_value_surface.get_rect(
-                    centerx=self.score_rect.centerx, centery=self.score_rect.centery
-                ),
-            )
-
-            # Next block
-            self.screen.blit(self.next_surface, self.NEXT_BLOCK_POSITION)
-            pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, self.next_rect, 0, 10)
-
-            # Game Over
-            if self.game_over:
-                self.screen.blit(self.game_over_surface, self.GAME_OVER_POSITION)
-                # Sound
-                self.SOUNDS["process"].stop()
+            self.draw_score()
+            self.draw_next()
 
             # Draw Game
             self.draw(self.screen)
+
+            # Game Over
+            if self.game_over:
+                self.draw_game_over()
 
             # Update screen
             pygame.display.update()

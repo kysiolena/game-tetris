@@ -163,6 +163,87 @@ class Game:
         self.screen.blit(next_surface, (375, 180, 50, 50))
         pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, next_rect, 0, 10)
 
+    def draw_controls(self) -> None:
+        # Rotate Surface
+        rotate_surface = self.title_font.render("ArrUP", True, Colors.DARK_GREY)
+        # Left Surface
+        left_surface = self.title_font.render("ArrL", True, Colors.DARK_GREY)
+        # Right Surface
+        right_surface = self.title_font.render("ArrR", True, Colors.DARK_GREY)
+
+        # Rotate Button
+        rotate_button = self.buttons.get("rotate")
+
+        if not rotate_button:
+            # Repeat block Rect
+            rotate_rect = pygame.Rect(355, 420, 90, 45)
+
+            self.buttons["rotate"] = {"rect": rotate_rect, "color": Colors.WHITE}
+
+        # Left Button
+        left_button = self.buttons.get("left")
+
+        if not left_button:
+            # Repeat block Rect
+            left_rect = pygame.Rect(320, 475, 80, 45)
+
+            self.buttons["left"] = {"rect": left_rect, "color": Colors.WHITE}
+
+        # Right Button
+        right_button = self.buttons.get("right")
+
+        if not right_button:
+            # Repeat block Rect
+            right_rect = pygame.Rect(405, 475, 80, 45)
+
+            self.buttons["right"] = {"rect": right_rect, "color": Colors.WHITE}
+
+        # Rotate draw
+        pygame.draw.rect(
+            self.screen,
+            self.buttons["rotate"]["color"],
+            self.buttons["rotate"]["rect"],
+            0,
+            10,
+        )
+        self.screen.blit(
+            rotate_surface,
+            rotate_surface.get_rect(
+                centerx=self.buttons["rotate"]["rect"].centerx,
+                centery=self.buttons["rotate"]["rect"].centery,
+            ),
+        )
+        # Left draw
+        pygame.draw.rect(
+            self.screen,
+            self.buttons["left"]["color"],
+            self.buttons["left"]["rect"],
+            0,
+            10,
+        )
+        self.screen.blit(
+            left_surface,
+            left_surface.get_rect(
+                centerx=self.buttons["left"]["rect"].centerx,
+                centery=self.buttons["left"]["rect"].centery,
+            ),
+        )
+        # Right draw
+        pygame.draw.rect(
+            self.screen,
+            self.buttons["right"]["color"],
+            self.buttons["right"]["rect"],
+            0,
+            10,
+        )
+        self.screen.blit(
+            right_surface,
+            right_surface.get_rect(
+                centerx=self.buttons["right"]["rect"].centerx,
+                centery=self.buttons["right"]["rect"].centery,
+            ),
+        )
+
     def draw_game_over(self) -> None:
         # Game Over Surface
         game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
@@ -349,18 +430,36 @@ class Game:
                 mouse_pos = pygame.mouse.get_pos()
 
                 if self.game_over:
-                    # Repeat Button Rect
+                    # Repeat Button
                     repeat_button = self.buttons.get("repeat")
 
                     if repeat_button and repeat_button["rect"].collidepoint(mouse_pos):
                         self.reset()
+                else:
+                    # Rotate Button
+                    rotate_button = self.buttons.get("rotate")
+
+                    if rotate_button and rotate_button["rect"].collidepoint(mouse_pos):
+                        self.rotate()
+
+                    # Left Button
+                    left_button = self.buttons.get("left")
+
+                    if left_button and left_button["rect"].collidepoint(mouse_pos):
+                        self.move_left()
+
+                    # Right Button
+                    right_button = self.buttons.get("right")
+
+                    if right_button and right_button["rect"].collidepoint(mouse_pos):
+                        self.move_right()
 
             if event.type == pygame.MOUSEMOTION:
                 # Mouse current position
                 mouse_pos = pygame.mouse.get_pos()
 
                 if self.game_over:
-                    # Repeat Button Rect
+                    # Repeat Button
                     repeat_button = self.buttons.get("repeat")
 
                     if repeat_button:
@@ -368,6 +467,34 @@ class Game:
                             repeat_button["color"] = Colors.DARK_GREEN
                         else:
                             repeat_button["color"] = Colors.GREEN
+
+                else:
+                    # Rotate Button
+                    rotate_button = self.buttons.get("rotate")
+
+                    if rotate_button:
+                        if rotate_button["rect"].collidepoint(mouse_pos):
+                            rotate_button["color"] = Colors.LIGHT_GREY
+                        else:
+                            rotate_button["color"] = Colors.WHITE
+
+                    # Left Button
+                    left_button = self.buttons.get("left")
+
+                    if left_button:
+                        if left_button["rect"].collidepoint(mouse_pos):
+                            left_button["color"] = Colors.LIGHT_GREY
+                        else:
+                            left_button["color"] = Colors.WHITE
+
+                    # Right Button
+                    right_button = self.buttons.get("right")
+
+                    if right_button:
+                        if right_button["rect"].collidepoint(mouse_pos):
+                            right_button["color"] = Colors.LIGHT_GREY
+                        else:
+                            right_button["color"] = Colors.WHITE
 
             # Trigger move block down automatically with one per 200 ms
             if event.type == self.GAME_UPDATE and not self.game_over:
@@ -383,6 +510,7 @@ class Game:
 
             self.draw_score()
             self.draw_next()
+            self.draw_controls()
 
             # Draw Game
             self.draw(self.screen)

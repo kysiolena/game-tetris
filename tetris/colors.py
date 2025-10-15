@@ -1,5 +1,6 @@
 class Colors:
     DARK_GREY = (26, 31, 40)
+    LIGHT_GREY = (235, 232, 232)
     GREEN = (47, 230, 23)
     DARK_GREEN = (35, 191, 17)
     RED = (232, 18, 18)
@@ -31,4 +32,5 @@ class Colors:
             cls.WHITE,
             cls.LIGHT_BLUE,
             cls.DARK_GREEN,
+            cls.LIGHT_GREY,
         ]

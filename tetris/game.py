@@ -267,27 +267,56 @@ class Game:
         )
 
         # Statistic
-        for index, item in enumerate(self.last_five_statistic_items):
+        index = 1
+        for item in self.last_five_statistic_items:
             game_score = item["score"]
-            game_time = int(item["time"])
             game_date = datetime.datetime.strptime(
                 item["date"], "%Y-%m-%d %H:%M:%S"
             ).strftime("%b %d, %Y at %I:%M %p")
-            text = (
-                f"{index + 1}. Score: {game_score} Time: {game_time}s Date: {game_date}"
-            )
+
+            game_time = int(item["time"])
+            # Hours
+            if game_time > 3600:
+                game_time = f"{int(game_time / 3600)}h"
+            # Minutes
+            elif game_time > 60:
+                game_time = f"{int(game_time / 60)}m"
+            # Seconds
+            else:
+                game_time = f"{game_time}s"
+
+            text = f"{index}. Score: {game_score} Time: {game_time} Date: {game_date}"
             item_surface = self.text_font.render(
                 text,
                 True,
-                Colors.WHITE if index else Colors.DARK_GREEN,
+                Colors.WHITE if index != 1 else Colors.DARK_GREEN,
             )
             self.screen.blit(
                 item_surface,
                 item_surface.get_rect(
                     centerx=self.buttons["repeat"].rect.centerx,
-                    centery=(game_over_rect.top + 60 + (index + 1) * 20),
+                    centery=(game_over_rect.top + 60 + index * 20),
                 ),
             )
+
+            index += 1
+
+        # Best Score
+        game_the_best_score = self.game_statistic.get_the_best()
+        game_the_best_score_text = f"Your the best result is {game_the_best_score}"
+
+        the_best_score_surface = self.button_font.render(
+            game_the_best_score_text,
+            True,
+            Colors.ORANGE,
+        )
+        self.screen.blit(
+            the_best_score_surface,
+            the_best_score_surface.get_rect(
+                centerx=self.buttons["repeat"].rect.centerx,
+                centery=(game_over_rect.top + 65 + index * 20),
+            ),
+        )
 
         # Sound
         self.SOUNDS["process"].stop()
@@ -646,3 +675,9 @@ class GameStatistic:
             # print("Error: The specified file was not found. Please check the file name and path.")
 
             return []
+
+    def get_the_best(self):
+        data = self.get_list()
+        max_score = max(list(map(lambda item: int(item["score"]), data)))
+
+        return max_score

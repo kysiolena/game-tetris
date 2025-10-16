@@ -9,6 +9,7 @@ class Colors:
     PURPLE = (166, 0, 247)
     CYAN = (21, 204, 209)
     BLUE = (13, 64, 216)
+    PINK = (245, 39, 238)
     DARK_BLUE = (44, 44, 127)
     WHITE = (255, 255, 255)
     LIGHT_BLUE = (59, 85, 162)
@@ -28,6 +29,7 @@ class Colors:
             cls.PURPLE,
             cls.CYAN,
             cls.BLUE,
+            cls.PINK,
             cls.DARK_BLUE,
             cls.WHITE,
             cls.LIGHT_BLUE,

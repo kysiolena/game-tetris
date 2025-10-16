@@ -6,7 +6,7 @@ import pygame
 from pygame import Surface
 
 from .block import Block
-from .blocks import LBlock, JBlock, TBlock, IBlock, OBlock, SBlock, ZBlock
+from .blocks import LBlock, JBlock, TBlock, IBlock, OBlock, SBlock, ZBlock, UBlock
 from .colors import Colors
 from .grid import Grid
 
@@ -97,6 +97,7 @@ class Game:
             OBlock(),
             SBlock(),
             ZBlock(),
+            UBlock(),
         ]
 
     def get_random_block(self) -> Block:
@@ -125,6 +126,7 @@ class Game:
             5: (270, 270),
             6: (270, 270),
             7: (270, 270),
+            8: (270, 270),
         }
 
         offset_x, offset_y = next_block_offsets[self.next_block.id]

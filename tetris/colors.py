@@ -1,24 +1,27 @@
+from .settings import Color
+
+
 class Colors:
-    DARK_GREY = (26, 31, 40)
-    LIGHT_GREY = (235, 232, 232)
-    GREEN = (47, 230, 23)
-    DARK_GREEN = (35, 191, 17)
-    RED = (232, 18, 18)
-    ORANGE = (226, 116, 17)
-    YELLOW = (237, 234, 4)
-    PURPLE = (166, 0, 247)
-    CYAN = (21, 204, 209)
-    BLUE = (13, 64, 216)
-    PINK = (245, 39, 238)
-    DARK_BLUE = (44, 44, 127)
-    WHITE = (255, 255, 255)
-    LIGHT_BLUE = (59, 85, 162)
+    DARK_GREY: Color = (26, 31, 40)
+    LIGHT_GREY: Color = (235, 232, 232)
+    GREEN: Color = (47, 230, 23)
+    DARK_GREEN: Color = (35, 191, 17)
+    RED: Color = (232, 18, 18)
+    ORANGE: Color = (226, 116, 17)
+    YELLOW: Color = (237, 234, 4)
+    PURPLE: Color = (166, 0, 247)
+    CYAN: Color = (21, 204, 209)
+    BLUE: Color = (13, 64, 216)
+    PINK: Color = (245, 39, 238)
+    DARK_BLUE: Color = (44, 44, 127)
+    WHITE: Color = (255, 255, 255)
+    LIGHT_BLUE: Color = (59, 85, 162)
 
     @classmethod
-    def get_colors(cls) -> list[tuple[int, int, int]]:
+    def get_colors(cls) -> list[Color]:
         """
         Get list of Colors
-        :return: list[tuple[int, int, int]]
+        :return: list[Color]
         """
         return [
             cls.DARK_GREY,

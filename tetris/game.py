@@ -7,6 +7,7 @@ from pygame import Surface
 
 from .block import Block
 from .blocks import LBlock, JBlock, TBlock, IBlock, OBlock, SBlock, ZBlock, UBlock
+from .button import Button, ButtonBGColor, ButtonTextColor
 from .colors import Colors
 from .grid import Grid
 from .settings import *
@@ -45,7 +46,7 @@ class Game:
     score: int = 0
 
     # Buttons
-    buttons: dict[str, dict] = {}
+    buttons: dict[str, Button] = {}
 
     def __init__(self):
         # Init Pygame
@@ -64,6 +65,9 @@ class Game:
 
         # Title Font
         self.title_font = pygame.font.Font(None, 40)
+
+        # Button Font
+        self.button_font = pygame.font.Font(None, 30)
 
         # Set game screen size
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -162,87 +166,6 @@ class Game:
         self.screen.blit(next_surface, (375, 180, 50, 50))
         pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, next_rect, 0, 10)
 
-    def draw_controls(self) -> None:
-        # Rotate Surface
-        rotate_surface = self.title_font.render("ArrUP", True, Colors.DARK_GREY)
-        # Left Surface
-        left_surface = self.title_font.render("ArrL", True, Colors.DARK_GREY)
-        # Right Surface
-        right_surface = self.title_font.render("ArrR", True, Colors.DARK_GREY)
-
-        # Rotate Button
-        rotate_button = self.buttons.get("rotate")
-
-        if not rotate_button:
-            # Repeat block Rect
-            rotate_rect = pygame.Rect(355, 420, 90, 45)
-
-            self.buttons["rotate"] = {"rect": rotate_rect, "color": Colors.WHITE}
-
-        # Left Button
-        left_button = self.buttons.get("left")
-
-        if not left_button:
-            # Repeat block Rect
-            left_rect = pygame.Rect(320, 475, 80, 45)
-
-            self.buttons["left"] = {"rect": left_rect, "color": Colors.WHITE}
-
-        # Right Button
-        right_button = self.buttons.get("right")
-
-        if not right_button:
-            # Repeat block Rect
-            right_rect = pygame.Rect(405, 475, 80, 45)
-
-            self.buttons["right"] = {"rect": right_rect, "color": Colors.WHITE}
-
-        # Rotate draw
-        pygame.draw.rect(
-            self.screen,
-            self.buttons["rotate"]["color"],
-            self.buttons["rotate"]["rect"],
-            0,
-            10,
-        )
-        self.screen.blit(
-            rotate_surface,
-            rotate_surface.get_rect(
-                centerx=self.buttons["rotate"]["rect"].centerx,
-                centery=self.buttons["rotate"]["rect"].centery,
-            ),
-        )
-        # Left draw
-        pygame.draw.rect(
-            self.screen,
-            self.buttons["left"]["color"],
-            self.buttons["left"]["rect"],
-            0,
-            10,
-        )
-        self.screen.blit(
-            left_surface,
-            left_surface.get_rect(
-                centerx=self.buttons["left"]["rect"].centerx,
-                centery=self.buttons["left"]["rect"].centery,
-            ),
-        )
-        # Right draw
-        pygame.draw.rect(
-            self.screen,
-            self.buttons["right"]["color"],
-            self.buttons["right"]["rect"],
-            0,
-            10,
-        )
-        self.screen.blit(
-            right_surface,
-            right_surface.get_rect(
-                centerx=self.buttons["right"]["rect"].centerx,
-                centery=self.buttons["right"]["rect"].centery,
-            ),
-        )
-
     def draw_game_over(self) -> None:
         # Game Over Surface
         game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
@@ -281,38 +204,83 @@ class Game:
         self.SOUNDS["process"].stop()
 
     def draw_repeat_button(self) -> None:
-        # Repeat Surface
-        repeat_surface = self.title_font.render("START NEW GAME", True, Colors.WHITE)
-
         # Repeat Button
-        repeat_button = self.buttons.get("repeat")
-
-        if not repeat_button:
-            # Repeat block Rect
-            repeat_rect = pygame.Rect(
+        if not self.buttons.get("repeat"):
+            self.buttons["repeat"] = Button(
+                self.button_font,
+                "START NEW GAME",
+                ButtonBGColor(Colors.GREEN, Colors.DARK_GREEN),
+                ButtonTextColor(Colors.WHITE, Colors.WHITE),
                 SCREEN_WIDTH // 2 - 150,
                 SCREEN_HEIGHT - SCREEN_HEIGHT // 4 - 70,
                 300,
                 50,
             )
 
-            self.buttons["repeat"] = {"rect": repeat_rect, "color": Colors.GREEN}
+        self.buttons["repeat"].draw(self.screen)
 
-        # Repeat block draw
-        pygame.draw.rect(
-            self.screen,
-            self.buttons["repeat"]["color"],
-            self.buttons["repeat"]["rect"],
-            0,
-            10,
-        )
-        self.screen.blit(
-            repeat_surface,
-            repeat_surface.get_rect(
-                centerx=self.buttons["repeat"]["rect"].centerx,
-                centery=self.buttons["repeat"]["rect"].centery,
-            ),
-        )
+    def draw_control_buttons(self) -> None:
+
+        # Rotate Button
+        if not self.buttons.get("rotate"):
+            self.buttons["rotate"] = Button(
+                self.button_font,
+                "ArrUP",
+                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                355,
+                420,
+                90,
+                45,
+            )
+
+        self.buttons["rotate"].draw(self.screen)
+
+        # To Left Button
+        if not self.buttons.get("to_left"):
+            self.buttons["to_left"] = Button(
+                self.button_font,
+                "ArrL",
+                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                320,
+                475,
+                80,
+                45,
+            )
+
+        self.buttons["to_left"].draw(self.screen)
+
+        # To Right Button
+        if not self.buttons.get("to_right"):
+            self.buttons["to_right"] = Button(
+                self.button_font,
+                "ArrR",
+                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                # (405, 475, 80, 45)
+                405,
+                475,
+                80,
+                45,
+            )
+
+        self.buttons["to_right"].draw(self.screen)
+
+        # To Down Button
+        if not self.buttons.get("to_down"):
+            self.buttons["to_down"] = Button(
+                self.button_font,
+                "ArrD",
+                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                355,
+                530,
+                90,
+                45,
+            )
+
+        self.buttons["to_down"].draw(self.screen)
 
     def move_left(self) -> None:
         self.current_block.move(0, -1)
@@ -431,27 +399,28 @@ class Game:
                 if self.game_over:
                     # Repeat Button
                     repeat_button = self.buttons.get("repeat")
-
-                    if repeat_button and repeat_button["rect"].collidepoint(mouse_pos):
+                    if repeat_button and repeat_button.is_collide(mouse_pos):
                         self.reset()
                 else:
                     # Rotate Button
                     rotate_button = self.buttons.get("rotate")
-
-                    if rotate_button and rotate_button["rect"].collidepoint(mouse_pos):
+                    if rotate_button and rotate_button.is_collide(mouse_pos):
                         self.rotate()
 
-                    # Left Button
-                    left_button = self.buttons.get("left")
-
-                    if left_button and left_button["rect"].collidepoint(mouse_pos):
+                    # To Left Button
+                    left_button = self.buttons.get("to_left")
+                    if left_button and left_button.is_collide(mouse_pos):
                         self.move_left()
 
-                    # Right Button
-                    right_button = self.buttons.get("right")
-
-                    if right_button and right_button["rect"].collidepoint(mouse_pos):
+                    # To Right Button
+                    right_button = self.buttons.get("to_right")
+                    if right_button and right_button.is_collide(mouse_pos):
                         self.move_right()
+
+                    # To Down Button
+                    down_button = self.buttons.get("to_down")
+                    if down_button and down_button.is_collide(mouse_pos):
+                        self.move_down(True)
 
             if event.type == pygame.MOUSEMOTION:
                 # Mouse current position
@@ -460,40 +429,29 @@ class Game:
                 if self.game_over:
                     # Repeat Button
                     repeat_button = self.buttons.get("repeat")
-
                     if repeat_button:
-                        if repeat_button["rect"].collidepoint(mouse_pos):
-                            repeat_button["color"] = Colors.DARK_GREEN
-                        else:
-                            repeat_button["color"] = Colors.GREEN
+                        repeat_button.mouse_move(mouse_pos)
 
                 else:
                     # Rotate Button
                     rotate_button = self.buttons.get("rotate")
-
                     if rotate_button:
-                        if rotate_button["rect"].collidepoint(mouse_pos):
-                            rotate_button["color"] = Colors.LIGHT_GREY
-                        else:
-                            rotate_button["color"] = Colors.WHITE
+                        rotate_button.mouse_move(mouse_pos)
 
-                    # Left Button
-                    left_button = self.buttons.get("left")
-
+                    # To Left Button
+                    left_button = self.buttons.get("to_left")
                     if left_button:
-                        if left_button["rect"].collidepoint(mouse_pos):
-                            left_button["color"] = Colors.LIGHT_GREY
-                        else:
-                            left_button["color"] = Colors.WHITE
+                        left_button.mouse_move(mouse_pos)
 
-                    # Right Button
-                    right_button = self.buttons.get("right")
-
+                    # To Right Button
+                    right_button = self.buttons.get("to_right")
                     if right_button:
-                        if right_button["rect"].collidepoint(mouse_pos):
-                            right_button["color"] = Colors.LIGHT_GREY
-                        else:
-                            right_button["color"] = Colors.WHITE
+                        right_button.mouse_move(mouse_pos)
+
+                    # To Down Button
+                    down_button = self.buttons.get("to_down")
+                    if down_button:
+                        down_button.mouse_move(mouse_pos)
 
             # Trigger move block down automatically with one per 200 ms
             if event.type == self.GAME_UPDATE and not self.game_over:
@@ -509,7 +467,7 @@ class Game:
 
             self.draw_score()
             self.draw_next()
-            self.draw_controls()
+            self.draw_control_buttons()
 
             # Draw Game
             self.draw(self.screen)

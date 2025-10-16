@@ -9,6 +9,7 @@ from .block import Block
 from .blocks import LBlock, JBlock, TBlock, IBlock, OBlock, SBlock, ZBlock, UBlock
 from .colors import Colors
 from .grid import Grid
+from .settings import *
 
 
 class Game:
@@ -36,10 +37,6 @@ class Game:
 
     # Speed
     SPEED: int = 1
-
-    # Screen size
-    SCREEN_WIDTH: int = 500
-    SCREEN_HEIGHT: int = 620
 
     visible_blocks: list[Block] = []
     current_block: Block | None = None
@@ -69,7 +66,7 @@ class Game:
         self.title_font = pygame.font.Font(None, 40)
 
         # Set game screen size
-        self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Set caption game
         pygame.display.set_caption("Tetris")
@@ -252,14 +249,14 @@ class Game:
 
         # Game Over Rect
         game_over_rect = pygame.Rect(
-            10, self.SCREEN_HEIGHT // 4, self.SCREEN_WIDTH - 20, self.SCREEN_HEIGHT // 2
+            10, SCREEN_HEIGHT // 4, SCREEN_WIDTH - 20, SCREEN_HEIGHT // 2
         )
 
         # Backdrop
         transparent_surface = pygame.Surface(
-            (self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.SRCALPHA
+            (SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA
         )
-        game_over_bg_rect = pygame.Rect(0, 0, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        game_over_bg_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
         pygame.draw.rect(
             transparent_surface,
             Colors.WHITE + (128,),
@@ -274,7 +271,7 @@ class Game:
             game_over_surface,
             game_over_surface.get_rect(
                 centerx=game_over_rect.centerx,
-                centery=(self.SCREEN_HEIGHT // 4 + 40),
+                centery=(SCREEN_HEIGHT // 4 + 40),
             ),
         )
 
@@ -293,8 +290,8 @@ class Game:
         if not repeat_button:
             # Repeat block Rect
             repeat_rect = pygame.Rect(
-                self.SCREEN_WIDTH // 2 - 150,
-                self.SCREEN_HEIGHT - self.SCREEN_HEIGHT // 4 - 70,
+                SCREEN_WIDTH // 2 - 150,
+                SCREEN_HEIGHT - SCREEN_HEIGHT // 4 - 70,
                 300,
                 50,
             )

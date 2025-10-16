@@ -12,9 +12,6 @@ class Grid:
         # Columns number
         self.num_cols = 10
 
-        # Cell size
-        self.cell_size = 30
-
         # Grid matrix
         # [
         #   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], x 20

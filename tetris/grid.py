@@ -1,16 +1,18 @@
+import pygame
 from pygame import Surface
 
 from .cell import Cell
 from .colors import Colors
 from .position import Position
+from .settings import CELL_SIZE, OFFSET_X, OFFSET_Y
 
 
 class Grid:
-    def __init__(self):
+    def __init__(self, num_rows: int = 20, num_cols: int = 10):
         # Rows number
-        self.num_rows = 20
+        self.num_rows = num_rows
         # Columns number
-        self.num_cols = 10
+        self.num_cols = num_cols
 
         # Grid matrix
         # [
@@ -99,3 +101,6 @@ class Grid:
                 color_index = self.grid[row][col]
                 # Draw Cell
                 Cell.draw(Position(row, col), color_index, surface)
+
+    def get_rect(self, x: int = OFFSET_X, y: int = OFFSET_Y) -> pygame.Rect:
+        return pygame.Rect(x, y, self.num_cols * CELL_SIZE, self.num_rows * CELL_SIZE)

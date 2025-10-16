@@ -63,11 +63,16 @@ class Game:
             "clear": pygame.mixer.Sound(os.path.join("tetris", "sounds", "clear.ogg")),
         }
 
+        self.font = os.path.join("tetris", "fonts", "Montserrat-Regular.ttf")
+
         # Title Font
-        self.title_font = pygame.font.Font(None, 40)
+        self.title_font = pygame.font.Font(self.font, 35)
 
         # Button Font
-        self.button_font = pygame.font.Font(None, 30)
+        self.button_font = pygame.font.Font(self.font, 25)
+
+        # Text Font
+        self.text_font = pygame.font.Font(self.font, 15)
 
         # Set game screen size
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -83,7 +88,15 @@ class Game:
         pygame.time.set_timer(self.GAME_UPDATE, 200 // self.SPEED)
 
         # Init Grid
-        self.grid = Grid()
+        self.grid = Grid(20, 10)
+
+        # Sidebar Rect
+        self.sidebar_rect = pygame.Rect(
+            self.grid.get_rect().right + OFFSET_X,
+            self.grid.get_rect().top,
+            SCREEN_WIDTH - self.grid.get_rect().width - 3 * OFFSET_X,
+            self.grid.get_rect().height,
+        )
 
         # Init game
         self.init()
@@ -120,14 +133,14 @@ class Game:
 
         # Next Block offset x, y
         next_block_offsets: dict[int, tuple[int, int]] = {
-            1: (270, 270),
-            2: (270, 270),
-            3: (255, 290),
-            4: (255, 270),
-            5: (270, 270),
-            6: (270, 270),
-            7: (270, 270),
-            8: (270, 270),
+            1: (270, 250),
+            2: (270, 250),
+            3: (255, 270),
+            4: (255, 250),
+            5: (270, 250),
+            6: (270, 250),
+            7: (270, 250),
+            8: (270, 250),
         }
 
         offset_x, offset_y = next_block_offsets[self.next_block.id]
@@ -143,10 +156,21 @@ class Game:
         )
 
         # Score Rect
-        score_rect = pygame.Rect(320, 55, 170, 60)
+        score_rect = pygame.Rect(
+            self.sidebar_rect.left,
+            self.sidebar_rect.top + 50,
+            self.sidebar_rect.width,
+            60,
+        )
 
         # Score draw
-        self.screen.blit(score_surface, (365, 20, 50, 50))
+        self.screen.blit(
+            score_surface,
+            score_surface.get_rect(
+                centerx=score_rect.centerx,
+                centery=score_rect.top - 25,
+            ),
+        )
         pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, score_rect, 0, 10)
         self.screen.blit(
             score_value_surface,
@@ -160,21 +184,24 @@ class Game:
         next_surface = self.title_font.render("Next", True, Colors.WHITE)
 
         # Next block Rect
-        next_rect = pygame.Rect(320, 215, 170, 180)
+        next_rect = pygame.Rect(
+            self.sidebar_rect.left,
+            self.sidebar_rect.top + 180,
+            self.sidebar_rect.width,
+            180,
+        )
 
         # Next block draw
-        self.screen.blit(next_surface, (375, 180, 50, 50))
+        self.screen.blit(
+            next_surface,
+            next_surface.get_rect(
+                centerx=next_rect.centerx,
+                centery=next_rect.top - 25,
+            ),
+        )
         pygame.draw.rect(self.screen, Colors.LIGHT_BLUE, next_rect, 0, 10)
 
     def draw_game_over(self) -> None:
-        # Game Over Surface
-        game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
-
-        # Game Over Rect
-        game_over_rect = pygame.Rect(
-            10, SCREEN_HEIGHT // 4, SCREEN_WIDTH - 20, SCREEN_HEIGHT // 2
-        )
-
         # Backdrop
         transparent_surface = pygame.Surface(
             (SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA
@@ -187,6 +214,19 @@ class Game:
             0,
         )
 
+        # Game Over Rect
+        game_over_rect = pygame.Rect(
+            10, SCREEN_HEIGHT // 4, SCREEN_WIDTH - 20, SCREEN_HEIGHT // 2
+        )
+
+        # Game Over Title
+        game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
+
+        # Repeat Game text
+        repeat_text_surface = self.text_font.render(
+            "Or press Space button on the keyboard", True, Colors.WHITE
+        )
+
         # Game Over draw
         self.screen.blit(transparent_surface, (0, 0))
         pygame.draw.rect(self.screen, Colors.DARK_BLUE, game_over_rect, 0, 10)
@@ -197,13 +237,20 @@ class Game:
                 centery=(SCREEN_HEIGHT // 4 + 40),
             ),
         )
+        self.screen.blit(
+            repeat_text_surface,
+            repeat_text_surface.get_rect(
+                centerx=game_over_rect.centerx,
+                centery=game_over_rect.bottom - 20,
+            ),
+        )
 
-        self.draw_repeat_button()
+        self.draw_repeat_button(game_over_rect)
 
         # Sound
         self.SOUNDS["process"].stop()
 
-    def draw_repeat_button(self) -> None:
+    def draw_repeat_button(self, parent_rect: pygame.Rect) -> None:
         # Repeat Button
         if not self.buttons.get("repeat"):
             self.buttons["repeat"] = Button(
@@ -211,8 +258,8 @@ class Game:
                 "START NEW GAME",
                 ButtonBGColor(Colors.GREEN, Colors.DARK_GREEN),
                 ButtonTextColor(Colors.WHITE, Colors.WHITE),
-                SCREEN_WIDTH // 2 - 150,
-                SCREEN_HEIGHT - SCREEN_HEIGHT // 4 - 70,
+                parent_rect.centerx - 150,
+                parent_rect.bottom - 100,
                 300,
                 50,
             )
@@ -228,8 +275,8 @@ class Game:
                 "ArrUP",
                 ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
                 ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
-                355,
-                420,
+                self.sidebar_rect.centerx - 45,
+                self.sidebar_rect.bottom - 210,
                 90,
                 45,
             )
@@ -243,8 +290,8 @@ class Game:
                 "ArrL",
                 ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
                 ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
-                320,
-                475,
+                self.sidebar_rect.left,
+                self.sidebar_rect.bottom - 160,
                 80,
                 45,
             )
@@ -259,8 +306,8 @@ class Game:
                 ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
                 ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
                 # (405, 475, 80, 45)
-                405,
-                475,
+                self.sidebar_rect.right - 80,
+                self.sidebar_rect.bottom - 160,
                 80,
                 45,
             )
@@ -274,13 +321,36 @@ class Game:
                 "ArrD",
                 ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
                 ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
-                355,
-                530,
+                self.sidebar_rect.centerx - 45,
+                self.sidebar_rect.bottom - 110,
                 90,
                 45,
             )
 
         self.buttons["to_down"].draw(self.screen)
+
+        # Control text
+        control_text_1_surface = self.text_font.render(
+            "Or use arrow buttons", True, Colors.WHITE
+        )
+        control_text_2_surface = self.text_font.render(
+            "on the keyboard", True, Colors.WHITE
+        )
+
+        self.screen.blit(
+            control_text_1_surface,
+            control_text_1_surface.get_rect(
+                centerx=self.sidebar_rect.centerx,
+                centery=self.sidebar_rect.bottom - 40,
+            ),
+        )
+        self.screen.blit(
+            control_text_2_surface,
+            control_text_2_surface.get_rect(
+                centerx=self.sidebar_rect.centerx,
+                centery=self.sidebar_rect.bottom - 20,
+            ),
+        )
 
     def move_left(self) -> None:
         self.current_block.move(0, -1)

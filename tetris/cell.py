@@ -3,7 +3,7 @@ from pygame import Surface
 
 from .colors import Colors
 from .position import Position
-from .settings import CELL_SIZE
+from .settings import CELL_SIZE, OFFSET_X, OFFSET_Y
 
 
 class Cell:
@@ -15,8 +15,8 @@ class Cell:
         position: Position,
         color_index: int,
         surface: Surface,
-        offset_x: int = 11,
-        offset_y: int = 11,
+        offset_x: int = OFFSET_X,
+        offset_y: int = OFFSET_Y,
         size: int = CELL_SIZE,
     ):
         # Cell Color

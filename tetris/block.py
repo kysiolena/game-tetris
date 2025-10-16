@@ -3,6 +3,7 @@ from pygame import Surface
 from .cell import Cell
 from .colors import Colors
 from .position import Position
+from .settings import OFFSET_X, OFFSET_Y
 
 
 class Block:
@@ -48,7 +49,9 @@ class Block:
 
         return moved_positions
 
-    def draw(self, surface: Surface, offset_x: int = 11, offset_y: int = 11) -> None:
+    def draw(
+        self, surface: Surface, offset_x: int = OFFSET_X, offset_y: int = OFFSET_Y
+    ) -> None:
         positions = self.get_cell_positions()
 
         for position in positions:

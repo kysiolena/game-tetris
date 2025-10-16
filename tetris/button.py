@@ -81,3 +81,7 @@ class Button:
 
     def is_collide(self, mouse_pos: tuple[int, int]) -> bool:
         return self._rect.collidepoint(mouse_pos)
+
+    @property
+    def rect(self):
+        return self._rect

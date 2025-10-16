@@ -1,6 +1,9 @@
+import datetime
+import json
 import os
 import random
 import sys
+import time
 
 import pygame
 from pygame import Surface
@@ -44,6 +47,8 @@ class Game:
     next_block: Block | None = None
     game_over: bool = False
     score: int = 0
+    start_time: float = 0.0
+    last_five_statistic_items = []
 
     # Buttons
     buttons: dict[str, Button] = {}
@@ -97,6 +102,9 @@ class Game:
             SCREEN_WIDTH - self.grid.get_rect().width - 3 * OFFSET_X,
             self.grid.get_rect().height,
         )
+
+        # Statistic
+        self.game_statistic = GameStatistic()
 
         # Init game
         self.init()
@@ -213,58 +221,76 @@ class Game:
             game_over_bg_rect,
             0,
         )
+        self.screen.blit(transparent_surface, (0, 0))
 
-        # Game Over Rect
+        # Rect
         game_over_rect = pygame.Rect(
             10, SCREEN_HEIGHT // 4, SCREEN_WIDTH - 20, SCREEN_HEIGHT // 2
         )
-
-        # Game Over Title
-        game_over_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
-
-        # Repeat Game text
-        repeat_text_surface = self.text_font.render(
-            "Or press Space button on the keyboard", True, Colors.WHITE
-        )
-
-        # Game Over draw
-        self.screen.blit(transparent_surface, (0, 0))
         pygame.draw.rect(self.screen, Colors.DARK_BLUE, game_over_rect, 0, 10)
+
+        # Title
+        title_surface = self.title_font.render("GAME OVER", True, Colors.WHITE)
         self.screen.blit(
-            game_over_surface,
-            game_over_surface.get_rect(
+            title_surface,
+            title_surface.get_rect(
                 centerx=game_over_rect.centerx,
-                centery=(SCREEN_HEIGHT // 4 + 40),
-            ),
-        )
-        self.screen.blit(
-            repeat_text_surface,
-            repeat_text_surface.get_rect(
-                centerx=game_over_rect.centerx,
-                centery=game_over_rect.bottom - 20,
+                centery=(game_over_rect.top + 40),
             ),
         )
 
-        self.draw_repeat_button(game_over_rect)
-
-        # Sound
-        self.SOUNDS["process"].stop()
-
-    def draw_repeat_button(self, parent_rect: pygame.Rect) -> None:
-        # Repeat Button
+        # Repeat button
         if not self.buttons.get("repeat"):
             self.buttons["repeat"] = Button(
                 self.button_font,
                 "START NEW GAME",
                 ButtonBGColor(Colors.GREEN, Colors.DARK_GREEN),
                 ButtonTextColor(Colors.WHITE, Colors.WHITE),
-                parent_rect.centerx - 150,
-                parent_rect.bottom - 100,
+                game_over_rect.centerx - 150,
+                game_over_rect.bottom - 100,
                 300,
                 50,
             )
 
         self.buttons["repeat"].draw(self.screen)
+
+        # Repeat Game text
+        repeat_text_surface = self.text_font.render(
+            "Or press Space button on the keyboard", True, Colors.WHITE
+        )
+        self.screen.blit(
+            repeat_text_surface,
+            repeat_text_surface.get_rect(
+                centerx=game_over_rect.centerx,
+                centery=game_over_rect.bottom - 30,
+            ),
+        )
+
+        # Statistic
+        for index, item in enumerate(self.last_five_statistic_items):
+            game_score = item["score"]
+            game_time = int(item["time"])
+            game_date = datetime.datetime.strptime(
+                item["date"], "%Y-%m-%d %H:%M:%S"
+            ).strftime("%b %d, %Y at %I:%M %p")
+            text = (
+                f"{index + 1}. Score: {game_score} Time: {game_time}s Date: {game_date}"
+            )
+            item_surface = self.text_font.render(
+                text,
+                True,
+                Colors.WHITE if index else Colors.DARK_GREEN,
+            )
+            self.screen.blit(
+                item_surface,
+                item_surface.get_rect(
+                    centerx=self.buttons["repeat"].rect.centerx,
+                    centery=(game_over_rect.top + 60 + (index + 1) * 20),
+                ),
+            )
+
+        # Sound
+        self.SOUNDS["process"].stop()
 
     def draw_control_buttons(self) -> None:
 
@@ -305,7 +331,6 @@ class Game:
                 "ArrR",
                 ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
                 ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
-                # (405, 475, 80, 45)
                 self.sidebar_rect.right - 80,
                 self.sidebar_rect.bottom - 160,
                 80,
@@ -407,7 +432,16 @@ class Game:
 
         # Game Over
         if not self.is_block_fits():
+            # End Game
             self.game_over = True
+
+            # Update Statistic
+            self.game_statistic.update(
+                self.score, time.time() - self.start_time, datetime.datetime.today()
+            )
+
+            # Statistic items for display
+            self.last_five_statistic_items = self.game_statistic.get_list()[-5:]
 
     def is_block_inside(self) -> bool:
         positions = self.current_block.get_cell_positions()
@@ -568,9 +602,47 @@ class Game:
         # Score
         self.score = 0
 
+        # Start Time
+        self.start_time = time.time()
+
+        # Statistic items for display
+        self.last_five_statistic_items = []
+
         # Sound
         self.SOUNDS["process"].play(-1)
 
     def reset(self) -> None:
         self.grid.reset()
         self.init()
+
+
+class GameStatistic:
+    file_path: str = os.path.join("tetris", "statistic", "history.json")
+
+    def update(self, score: int, game_time: float, game_date: datetime.datetime):
+        # New items
+        new_item = {
+            "score": score,
+            "time": game_time,
+            "date": datetime.datetime.strftime(game_date, "%Y-%m-%d %H:%M:%S"),
+        }
+
+        # Old items
+        data = self.get_list()
+
+        # Add new items
+        data.append(new_item)
+
+        with open(self.file_path, "w") as f:
+            json.dump(data, f)
+
+    def get_list(self) -> list:
+        try:
+            with open(self.file_path, "r") as f:
+                data: list = json.load(f)
+
+            return data
+        except FileNotFoundError:
+            # print("Error: The specified file was not found. Please check the file name and path.")
+
+            return []

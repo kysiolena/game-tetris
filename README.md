@@ -3,6 +3,14 @@
 Based on YouTube
 tutorial: [Creating Tetris in Python with pygame - Beginner Tutorial (OOP)](https://www.youtube.com/watch?v=nF_crEtmpBo)
 
+#### Game Screen
+
+![Game Screen](assets/images/game.png)
+
+#### Game Over Screen
+
+![Game Over Screen](assets/images/game-over.png)
+
 ## Instruction
 
 ### __Scoring System

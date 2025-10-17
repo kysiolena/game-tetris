@@ -14,6 +14,7 @@ from .button import Button, ButtonBGColor, ButtonTextColor
 from .colors import Colors
 from .grid import Grid
 from .settings import *
+from .utils import DateJSONEncoder, as_date_datetime
 
 
 class Game:
@@ -270,9 +271,7 @@ class Game:
         index = 1
         for item in self.last_five_statistic_items:
             game_score = item["score"]
-            game_date = datetime.datetime.strptime(
-                item["date"], "%Y-%m-%d %H:%M:%S"
-            ).strftime("%b %d, %Y at %I:%M %p")
+            game_date = item["date"].strftime("%b %d, %Y at %I:%M %p")
 
             game_time = int(item["time"])
             # Hours
@@ -653,7 +652,7 @@ class GameStatistic:
         new_item = {
             "score": score,
             "time": game_time,
-            "date": datetime.datetime.strftime(game_date, "%Y-%m-%d %H:%M:%S"),
+            "date": game_date,
         }
 
         # Old items
@@ -663,12 +662,12 @@ class GameStatistic:
         data.append(new_item)
 
         with open(self.file_path, "w") as f:
-            json.dump(data, f)
+            json.dump(data, f, cls=DateJSONEncoder)
 
     def get_list(self) -> list:
         try:
             with open(self.file_path, "r") as f:
-                data: list = json.load(f)
+                data: list = json.load(f, object_hook=as_date_datetime)
 
             return data
         except FileNotFoundError:

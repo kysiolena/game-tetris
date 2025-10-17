@@ -42,6 +42,8 @@ tutorial: [Creating Tetris in Python with pygame - Beginner Tutorial (OOP)](http
 12. [x] Add Next Block
 13. [x] Add Controls
 14. [x] Add Sounds
+15. [x] Add Statistic
+16. [x] Add images to control arrow buttons
 
 
 

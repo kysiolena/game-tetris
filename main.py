@@ -1,4 +1,4 @@
-from tetris import Game
+from assets import Game
 
 
 if __name__ == "__main__":

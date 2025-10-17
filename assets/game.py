@@ -61,15 +61,15 @@ class Game:
         # Sounds
         self.SOUNDS: dict = {
             "process": pygame.mixer.Sound(
-                os.path.join("tetris", "sounds", "music.ogg")
+                os.path.join("assets", "sounds", "music.ogg")
             ),
             "rotate": pygame.mixer.Sound(
-                os.path.join("tetris", "sounds", "rotate.ogg")
+                os.path.join("assets", "sounds", "rotate.ogg")
             ),
-            "clear": pygame.mixer.Sound(os.path.join("tetris", "sounds", "clear.ogg")),
+            "clear": pygame.mixer.Sound(os.path.join("assets", "sounds", "clear.ogg")),
         }
 
-        self.font = os.path.join("tetris", "fonts", "Montserrat-Regular.ttf")
+        self.font = os.path.join("assets", "fonts", "Montserrat-Regular.ttf")
 
         # Title Font
         self.title_font = pygame.font.Font(self.font, 35)
@@ -645,7 +645,7 @@ class Game:
 
 
 class GameStatistic:
-    file_path: str = os.path.join("tetris", "statistic", "history.json")
+    file_path: str = os.path.join("assets", "statistic", "history.json")
 
     def update(self, score: int, game_time: float, game_date: datetime.datetime):
         # New items

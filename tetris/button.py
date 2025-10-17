@@ -9,21 +9,13 @@ class ButtonColor:
         self.hover = hover
 
 
-class ButtonBGColor(ButtonColor):
-    pass
-
-
-class ButtonTextColor(ButtonColor):
-    pass
-
-
 class Button:
     def __init__(
         self,
         font: pygame.font.Font,
         text: str,
-        color_bg: ButtonBGColor,
-        color_text: ButtonTextColor,
+        color_bg: ButtonColor,
+        color_text: ButtonColor,
         x: int,
         y: int,
         width: int,

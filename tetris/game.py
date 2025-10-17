@@ -10,7 +10,7 @@ from pygame import Surface
 
 from .block import Block
 from .blocks import LBlock, JBlock, TBlock, IBlock, OBlock, SBlock, ZBlock, UBlock
-from .button import Button, ButtonBGColor, ButtonTextColor
+from .button import Button, ButtonColor
 from .colors import Colors
 from .grid import Grid
 from .settings import *
@@ -245,8 +245,8 @@ class Game:
             self.buttons["repeat"] = Button(
                 self.button_font,
                 "START NEW GAME",
-                ButtonBGColor(Colors.GREEN, Colors.DARK_GREEN),
-                ButtonTextColor(Colors.WHITE, Colors.WHITE),
+                ButtonColor(Colors.GREEN, Colors.DARK_GREEN),
+                ButtonColor(Colors.WHITE, Colors.WHITE),
                 game_over_rect.centerx - 150,
                 game_over_rect.bottom - 100,
                 300,
@@ -327,8 +327,8 @@ class Game:
             self.buttons["rotate"] = Button(
                 self.button_font,
                 "ArrUP",
-                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
                 self.sidebar_rect.centerx - 45,
                 self.sidebar_rect.bottom - 210,
                 90,
@@ -342,8 +342,8 @@ class Game:
             self.buttons["to_left"] = Button(
                 self.button_font,
                 "ArrL",
-                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
                 self.sidebar_rect.left,
                 self.sidebar_rect.bottom - 160,
                 80,
@@ -357,8 +357,8 @@ class Game:
             self.buttons["to_right"] = Button(
                 self.button_font,
                 "ArrR",
-                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
                 self.sidebar_rect.right - 80,
                 self.sidebar_rect.bottom - 160,
                 80,
@@ -372,8 +372,8 @@ class Game:
             self.buttons["to_down"] = Button(
                 self.button_font,
                 "ArrD",
-                ButtonBGColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonTextColor(Colors.DARK_GREY, Colors.DARK_GREY),
+                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
+                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
                 self.sidebar_rect.centerx - 45,
                 self.sidebar_rect.bottom - 110,
                 90,

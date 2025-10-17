@@ -243,14 +243,14 @@ class Game:
         # Repeat button
         if not self.buttons.get("repeat"):
             self.buttons["repeat"] = Button(
-                self.button_font,
-                "START NEW GAME",
-                ButtonColor(Colors.GREEN, Colors.DARK_GREEN),
-                ButtonColor(Colors.WHITE, Colors.WHITE),
                 game_over_rect.centerx - 150,
                 game_over_rect.bottom - 100,
                 300,
                 50,
+                self.button_font,
+                "START NEW GAME",
+                ButtonColor(Colors.GREEN, Colors.DARK_GREEN),
+                ButtonColor(Colors.WHITE, Colors.WHITE),
             )
 
         self.buttons["repeat"].draw(self.screen)
@@ -325,14 +325,11 @@ class Game:
         # Rotate Button
         if not self.buttons.get("rotate"):
             self.buttons["rotate"] = Button(
-                self.button_font,
-                "ArrUP",
-                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
-                self.sidebar_rect.centerx - 45,
+                self.sidebar_rect.centerx - 25,
                 self.sidebar_rect.bottom - 210,
-                90,
-                45,
+                50,
+                50,
+                image_path=os.path.join("assets", "images", "arrows", "up.png"),
             )
 
         self.buttons["rotate"].draw(self.screen)
@@ -340,14 +337,11 @@ class Game:
         # To Left Button
         if not self.buttons.get("to_left"):
             self.buttons["to_left"] = Button(
-                self.button_font,
-                "ArrL",
-                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
                 self.sidebar_rect.left,
                 self.sidebar_rect.bottom - 160,
-                80,
-                45,
+                50,
+                50,
+                image_path=os.path.join("assets", "images", "arrows", "left.png"),
             )
 
         self.buttons["to_left"].draw(self.screen)
@@ -355,14 +349,11 @@ class Game:
         # To Right Button
         if not self.buttons.get("to_right"):
             self.buttons["to_right"] = Button(
-                self.button_font,
-                "ArrR",
-                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
-                self.sidebar_rect.right - 80,
+                self.sidebar_rect.right - 50,
                 self.sidebar_rect.bottom - 160,
-                80,
-                45,
+                50,
+                50,
+                image_path=os.path.join("assets", "images", "arrows", "right.png"),
             )
 
         self.buttons["to_right"].draw(self.screen)
@@ -370,14 +361,11 @@ class Game:
         # To Down Button
         if not self.buttons.get("to_down"):
             self.buttons["to_down"] = Button(
-                self.button_font,
-                "ArrD",
-                ButtonColor(Colors.WHITE, Colors.LIGHT_GREY),
-                ButtonColor(Colors.DARK_GREY, Colors.DARK_GREY),
-                self.sidebar_rect.centerx - 45,
+                self.sidebar_rect.centerx - 25,
                 self.sidebar_rect.bottom - 110,
-                90,
-                45,
+                50,
+                50,
+                image_path=os.path.join("assets", "images", "arrows", "down.png"),
             )
 
         self.buttons["to_down"].draw(self.screen)
@@ -470,6 +458,7 @@ class Game:
 
             # Statistic items for display
             self.last_five_statistic_items = self.game_statistic.get_list()[-5:]
+            self.last_five_statistic_items.reverse()
 
     def is_block_inside(self) -> bool:
         positions = self.current_block.get_cell_positions()

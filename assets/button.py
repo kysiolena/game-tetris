@@ -10,16 +10,18 @@ class ButtonColor:
 
 
 class Button:
+
     def __init__(
         self,
-        font: pygame.font.Font,
-        text: str,
-        color_bg: ButtonColor,
-        color_text: ButtonColor,
         x: int,
         y: int,
         width: int,
         height: int,
+        font: pygame.font.Font | None = None,
+        text: str | None = None,
+        color_bg: ButtonColor | None = None,
+        color_text: ButtonColor | None = None,
+        image_path: str | None = None,
     ):
         self._font = font
         self._text = text
@@ -29,41 +31,58 @@ class Button:
         self._color_text = color_text
 
         # Current colors
-        self._current_color_bg: Color = color_bg.base
-        self._current_color_text: Color = color_text.base
+        self._current_color_bg: Color | None = color_bg.base if color_bg else None
+        self._current_color_text: Color | None = color_text.base if color_text else None
+
+        # Image Surface
+        self._image: pygame.Surface | None = (
+            pygame.image.load(image_path).convert_alpha() if image_path else None
+        )
 
         # Rect
         self._rect = pygame.Rect(x, y, width, height)
 
     def draw(self, screen: pygame.Surface) -> None:
-        # Text Surface
-        text_surface = self._font.render(self._text, True, self._current_color_text)
+        if self._image:
+            screen.blit(
+                self._image,
+                self._image.get_rect(topleft=self._rect.topleft),
+            )
+        else:
+            # Text Surface
+            text_surface = self._font.render(self._text, True, self._current_color_text)
 
-        # Draw Rect
-        pygame.draw.rect(
-            screen,
-            self._current_color_bg,
-            self._rect,
-            0,
-            10,
-        )
+            # Draw Rect
+            pygame.draw.rect(
+                screen,
+                self._current_color_bg,
+                self._rect,
+                0,
+                10,
+            )
 
-        # Draw Text
-        screen.blit(
-            text_surface,
-            text_surface.get_rect(
-                centerx=self._rect.centerx,
-                centery=self._rect.centery,
-            ),
-        )
+            # Draw Text
+            screen.blit(
+                text_surface,
+                text_surface.get_rect(
+                    centerx=self._rect.centerx,
+                    centery=self._rect.centery,
+                ),
+            )
 
     def mouse_in(self) -> None:
-        self._current_color_bg = self._color_bg.hover
-        self._current_color_text = self._color_text.hover
+        if self._image:
+            pass
+        else:
+            self._current_color_bg = self._color_bg.hover
+            self._current_color_text = self._color_text.hover
 
     def mouse_out(self) -> None:
-        self._current_color_bg = self._color_bg.base
-        self._current_color_text = self._color_text.base
+        if self._image:
+            pass
+        else:
+            self._current_color_bg = self._color_bg.base
+            self._current_color_text = self._color_text.base
 
     def mouse_move(self, mouse_pos: tuple[int, int]) -> None:
         if self.is_collide(mouse_pos):
